@@ -5,7 +5,7 @@
         "alamat" :{
             "jalan": "jl.pahlawan",
             "kota":"surabaya",
-            "provins": "jawa timur"
+            "provinsi": "jawa timur"
         },
         "hobi":["membaca", "bersepeda"]
     },
@@ -15,7 +15,7 @@
         "alamat" :{
             "jalan": "jl.cipto",
             "kota":"jakarta",
-            "provins": "DKI jakarta"
+            "provinsi": "DKI jakarta"
         },
         "hobi":["menulis", "makan"]
     }
