@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
-  Future<void>signout(BuildContext context)async{
+  Future<void>signOut(BuildContext context)async{
     await FirebaseAuth.instance.signOut();
 
 
@@ -22,7 +22,7 @@ class HomeScreen extends StatelessWidget {
       backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       actions: [
         IconButton(onPressed: (){
-          signout(context);
+          signOut(context);
         },
         icon: const Icon(Icons.logout),
         )
