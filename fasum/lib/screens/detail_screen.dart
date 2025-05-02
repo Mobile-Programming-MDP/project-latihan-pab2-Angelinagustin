@@ -12,7 +12,7 @@ class DetailScreen extends StatefulWidget {
     required this.createdAt,
     required this.fullName,
     required this.latitude,
-    required this.longitude,
+    required this.longtitude,
     required this.category,
     required this.heroTag,
   });
@@ -22,7 +22,7 @@ class DetailScreen extends StatefulWidget {
   final DateTime createdAt;
   final String fullName;
   final double latitude;
-  final double longitude;
+  final double longtitude;
   final String category;
   final String heroTag;
 
@@ -33,7 +33,7 @@ class DetailScreen extends StatefulWidget {
 class _DetailScreenState extends State<DetailScreen> {
   Future<void> openMap() async {
     final uri = Uri.parse(
-        "https://www.google.com/maps/search/?api=1&query=${widget.latitude},${widget.longitude}");
+        "https://www.google.com/maps/search/?api=1&query=${widget.latitude},${widget.longtitude}");
     final success = await launchUrl(
       uri,
       mode: LaunchMode.externalApplication,
