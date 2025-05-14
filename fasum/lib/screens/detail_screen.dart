@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:fasum/screens/full_image_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -12,7 +13,7 @@ class DetailScreen extends StatefulWidget {
     required this.createdAt,
     required this.fullName,
     required this.latitude,
-    required this.longtitude,
+    required this.longitude,
     required this.category,
     required this.heroTag,
   });
@@ -22,7 +23,7 @@ class DetailScreen extends StatefulWidget {
   final DateTime createdAt;
   final String fullName;
   final double latitude;
-  final double longtitude;
+  final double longitude;
   final String category;
   final String heroTag;
 
@@ -31,9 +32,10 @@ class DetailScreen extends StatefulWidget {
 }
 
 class _DetailScreenState extends State<DetailScreen> {
+  //install dependensi url_launcher : flutter pub add url_launcher
   Future<void> openMap() async {
     final uri = Uri.parse(
-        "https://www.google.com/maps/search/?api=1&query=${widget.latitude},${widget.longtitude}");
+        "https://www.google.com/maps/search/?api=1&query=${widget.latitude},${widget.longitude}");
     final success = await launchUrl(
       uri,
       mode: LaunchMode.externalApplication,
@@ -72,7 +74,15 @@ class _DetailScreenState extends State<DetailScreen> {
                   top: 12,
                   right: 12,
                   child: IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) =>
+                              FullImageScreen(imageBase64: widget.imageBase64),
+                        ),
+                      );
+                    },
                     icon: const Icon(
                       Icons.fullscreen,
                       color: Colors.white,
@@ -135,11 +145,8 @@ class _DetailScreenState extends State<DetailScreen> {
                       //Kanan : icon map
                       IconButton(
                         onPressed: openMap,
-                        icon: const Icon(
-                          Icons.map,
-                          size: 38,
-                          color: Colors.lightGreen,
-                        ),
+                        icon: const Icon(Icons.map,
+                            size: 38, color: Colors.lightGreen),
                         tooltip: "Buka di Google Map",
                       ),
                     ],
@@ -148,7 +155,17 @@ class _DetailScreenState extends State<DetailScreen> {
                   Text(
                     widget.description,
                     style: const TextStyle(fontSize: 16),
-                  )
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    "Lokasi",
+                    style: const TextStyle(
+                        fontSize: 12, fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    "${widget.latitude}, ${widget.longitude}",
+                    style: const TextStyle(fontSize: 12),
+                  ),
                 ],
               ),
             )
