@@ -8,6 +8,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:http/http.dart' as http;
  
 class AddPostScreen extends StatefulWidget {
   const AddPostScreen({Key? key}) : super(key: key);
@@ -216,6 +217,38 @@ class _AddPostScreenState extends State<AddPostScreen> {
         _latitude = null;
         _longitude = null;
       });
+    }
+  }
+  Future<void> sendNotificationToTopic(String body, String senderName) async {
+    final url = Uri.parse(
+        'https://fasum-cloud-dtmu.vercel.app/'); //url vercel 
+    final response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+        "topic": "berita-fasum",
+        "title": "🔔 Laporan Baru",
+        "body": body,
+        "senderName": senderName,
+        "senderPhotoUrl":
+            "https://t3.ftcdn.net/jpg/03/53/83/92/360_F_353839266_8yqhN0548cGxrl4VOxngsiJzDgrDHxjG.jpg",
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('✅ Notifikasi berhasil dikirim')),
+        );
+      }
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('❌ Gagal kirim notifikasi: ${response.body}')),
+        );
+      }
     }
   }
  
