@@ -64,6 +64,7 @@ class _HomeScreenState extends State<HomeScreen> {
         MaterialPageRoute(builder: (context) => const SignInScreen()));
   }
 
+  //ambil dari https://pastebin.com/8BXgdv3M
   void _showCategoryFilter() async {
     final result = await showModalBottomSheet<String?>(
       context: context,
@@ -165,12 +166,15 @@ class _HomeScreenState extends State<HomeScreen> {
       } else {
         // Like the post
         likes.add(currentUser.uid);
+        // Send notification to the post owner
+        sendLikeNotification(postId);
       }
 
       await postRef.update({'likes': likes});
     }
   }
 
+  //send notification to post owner
   void sendLikeNotification(String postId) async {
     final postSnapshot =
         await FirebaseFirestore.instance.collection("posts").doc(postId).get();
@@ -363,7 +367,7 @@ class _HomeScreenState extends State<HomeScreen> {
           .snapshots();
     } else {
       // Return posts filtered by the selected category
-       print("Filter by Category ${selectedCategory}");
+      print("Filter by Category ${selectedCategory}");
       return FirebaseFirestore.instance
           .collection("posts")
           .where("category", isEqualTo: selectedCategory)
@@ -372,10 +376,13 @@ class _HomeScreenState extends State<HomeScreen> {
           .snapshots();
     }
   }
-// inisimpan token ke firestore
-  void saveToken(String token, String uid) async{
+
+  //simpan token ke firestore
+  void saveToken(String token, String uid) async {
     await FirebaseFirestore.instance
-    .collection('users').doc(uid).update({'token': token});
+        .collection('users')
+        .doc(uid)
+        .update({'token': token});
   }
 
   @override
@@ -384,10 +391,9 @@ class _HomeScreenState extends State<HomeScreen> {
     final currentUser = FirebaseAuth.instance.currentUser;
     if (currentUser != null) {
       _currentUserId = currentUser.uid;
-
-      //mendapatkan token fcm
-      FirebaseMessaging.instance.getToken().then((token){
-        if(token != null){
+      // Mendapatkan token FCM
+      FirebaseMessaging.instance.getToken().then((token) {
+        if (token != null) {
           saveToken(token, currentUser.uid);
           print("FCM Token: $token");
         }
@@ -432,7 +438,7 @@ class _HomeScreenState extends State<HomeScreen> {
             if (snapshot.hasError) {
               print("Trapped in has error ${!snapshot.hasData}");
               print("${snapshot.error}");
-            
+
               return Center(child: Text('Error: ${snapshot.error}'));
             }
 
@@ -441,10 +447,15 @@ class _HomeScreenState extends State<HomeScreen> {
               //print("Data " + snapshot.data!.docs.length.toString());
               return const Center(child: CircularProgressIndicator());
             }
-            
-
 
             final posts = snapshot.data!.docs;
+            //.where((doc) {
+            //   final data = doc.data();
+            //   final category = data['category'] ?? 'Lainnya';
+            //   return true;
+            //   //return selectedCategory == null || selectedCategory == category;
+            // });
+            //.toList();
 
             if (posts.isEmpty) {
               return const Center(
@@ -452,6 +463,8 @@ class _HomeScreenState extends State<HomeScreen> {
               );
             }
 
+            //Script lengkap bagian ListView.builder
+            //https://pastebin.com/kSXM5mTX
             return ListView.builder(
               itemCount: posts.length,
               itemBuilder: (context, index) {
@@ -548,8 +561,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                               Icons.thumb_up,
                                               size: 20,
                                               color: (data['likes'] ?? [])
-                                                      .contains(
-                                                          _currentUserId)
+                                                      .contains(_currentUserId)
                                                   ? Colors.blue
                                                   : Colors.grey,
                                             ),
@@ -583,8 +595,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                               Icons.comment,
                                               size: 20,
                                               color: (data['comments'] ?? [])
-                                                      .contains(
-                                                          _currentUserId)
+                                                      .contains(_currentUserId)
                                                   ? Colors.blue
                                                   : Colors.grey,
                                             ),
